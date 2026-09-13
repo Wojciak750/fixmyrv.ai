@@ -1,0 +1,709 @@
+<title>RV Cost Comparison Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+  :root{
+    --ground:#F1F4F1;
+    --surface:#FFFFFF;
+    --surface-sunk:#E8EDE9;
+    --ink:#15211D;
+    --ink-mid:#43524C;
+    --ink-soft:#6B7973;
+    --rule:#D7DFDA;
+    --rule-firm:#B9C6C0;
+    --accent:#0A5C46;
+    --accent-ink:#FFFFFF;
+    --accent-wash:#DCEBE4;
+    --amber:#9C5A0C;
+    --amber-wash:#F6E7D2;
+    --clay:#94372A;
+    --clay-wash:#F6DFDA;
+    --grey:#6F7C77;
+    --shadow:0 1px 2px rgba(21,33,29,.06),0 1px 1px rgba(21,33,29,.04);
+    --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+    --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+    --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#101815;
+      --surface:#18211E;
+      --surface-sunk:#131C19;
+      --ink:#E7EDE9;
+      --ink-mid:#B3C0BA;
+      --ink-soft:#879891;
+      --rule:#2A3733;
+      --rule-firm:#3C4B45;
+      --accent:#5CBF9C;
+      --accent-ink:#08201A;
+      --accent-wash:#17342B;
+      --amber:#D89A4A;
+      --amber-wash:#33261440;
+      --clay:#E08A78;
+      --clay-wash:#3A211C;
+      --grey:#8A9791;
+      --shadow:0 1px 2px rgba(0,0,0,.30);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#101815;
+    --surface:#18211E;
+    --surface-sunk:#131C19;
+    --ink:#E7EDE9;
+    --ink-mid:#B3C0BA;
+    --ink-soft:#879891;
+    --rule:#2A3733;
+    --rule-firm:#3C4B45;
+    --accent:#5CBF9C;
+    --accent-ink:#08201A;
+    --accent-wash:#17342B;
+    --amber:#D89A4A;
+    --amber-wash:#332614;
+    --clay:#E08A78;
+    --clay-wash:#3A211C;
+    --grey:#8A9791;
+    --shadow:0 1px 2px rgba(0,0,0,.30);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--ground);
+    color:var(--ink);
+    font-family:var(--serif);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:940px;margin:0 auto;padding-inline:20px;padding-block:40px 72px}
+  @media (max-width:520px){.wrap{padding-inline:16px;padding-block:28px 56px}}
+  @media (max-width:640px){.asof{text-align:left}.odo-spacer{display:none}}
+
+  /* ---- masthead ---- */
+  .eyebrow{
+    font-family:var(--mono);font-size:11.5px;font-weight:500;
+    letter-spacing:.13em;text-transform:uppercase;color:var(--ink-soft);
+    margin:0 0 14px;
+  }
+  h1{
+    font-family:var(--display);font-weight:700;font-size:clamp(30px,5.2vw,46px);
+    line-height:1.06;letter-spacing:-.021em;text-wrap:balance;margin:0;color:var(--ink);
+  }
+  .standfirst{
+    font-size:17px;color:var(--ink-mid);max-width:60ch;margin:16px 0 0;
+  }
+  .brandflag{
+    display:flex;gap:10px;align-items:baseline;margin:20px 0 0;padding:11px 14px;
+    background:var(--accent-wash);border-left:3px solid var(--accent);border-radius:0 4px 4px 0;
+    font-size:14.5px;color:var(--ink-mid);
+  }
+  .brandflag b{font-family:var(--display);font-weight:600;color:var(--ink);white-space:nowrap}
+
+  /* ---- odometer readout ---- */
+  .cluster{
+    margin:34px 0 0;background:var(--surface);border:1px solid var(--rule);
+    border-radius:6px;box-shadow:var(--shadow);overflow:hidden;
+  }
+  .odo{
+    display:flex;flex-wrap:wrap;align-items:center;gap:20px 30px;
+    padding:20px 22px;border-bottom:1px solid var(--rule);
+  }
+  .odo-read{display:flex;align-items:baseline;gap:9px}
+  .odo-digits{
+    font-family:var(--mono);font-weight:600;font-variant-numeric:tabular-nums;
+    font-size:34px;letter-spacing:.02em;color:var(--ink);line-height:1;
+  }
+  .odo-digits .of{color:var(--ink-soft);font-weight:400;font-size:22px}
+  .odo-label{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--ink-soft);
+  }
+  .odo-spacer{flex:1 1 auto;min-width:0}
+  .asof{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;
+    color:var(--ink-soft);text-align:right;
+  }
+  .asof b{display:block;color:var(--ink-mid);font-weight:500;letter-spacing:.11em;text-transform:uppercase;font-size:10.5px}
+
+  .meter{display:flex;height:7px;background:var(--surface-sunk)}
+  .meter span{display:block;height:100%;transition:width .35s ease}
+  .meter .m-done{background:var(--accent)}
+  .meter .m-active{background:var(--amber)}
+  .meter .m-blocked{background:var(--clay)}
+
+  .tallies{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));
+    gap:1px;background:var(--rule);border-top:1px solid var(--rule);
+  }
+  .tally{padding:13px 16px;background:var(--surface)}
+  .tally .n{
+    font-family:var(--mono);font-weight:600;font-size:19px;font-variant-numeric:tabular-nums;
+    color:var(--ink);line-height:1.2;display:block;
+  }
+  .tally .k{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+
+  /* ---- controls ---- */
+  .controls{margin:30px 0 0;display:flex;flex-direction:column;gap:12px}
+  .ctrl-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+  .ctrl-legend{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+    color:var(--ink-soft);margin-right:4px;min-width:74px;
+  }
+  .chip{
+    font-family:var(--display);font-size:13px;font-weight:500;
+    padding:6px 12px;border-radius:100px;border:1px solid var(--rule-firm);
+    background:transparent;color:var(--ink-mid);cursor:pointer;line-height:1.35;
+    transition:background .14s,color .14s,border-color .14s;
+  }
+  .chip:hover{border-color:var(--accent);color:var(--accent)}
+  .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  .chip .c{font-family:var(--mono);font-size:11px;opacity:.72;margin-left:5px;font-variant-numeric:tabular-nums}
+  .toggle{
+    margin-left:auto;display:inline-flex;align-items:center;gap:7px;
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--ink-soft);cursor:pointer;
+  }
+  @media (max-width:640px){.toggle{margin-left:0}}
+  .toggle input{accent-color:var(--accent);width:15px;height:15px;cursor:pointer}
+
+  :where(button,select,textarea,input,a):focus-visible{
+    outline:2px solid var(--accent);outline-offset:2px;border-radius:3px;
+  }
+
+  /* ---- sections ---- */
+  .stream{margin:42px 0 0}
+  .stream-head{
+    display:flex;align-items:baseline;gap:12px;padding-bottom:9px;
+    border-bottom:2px solid var(--ink);margin-bottom:0;
+  }
+  .stream-head h2{
+    font-family:var(--display);font-weight:700;font-size:19px;letter-spacing:-.005em;
+    text-transform:uppercase;margin:0;color:var(--ink);
+  }
+  .stream-head .n{
+    font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);
+    font-variant-numeric:tabular-nums;letter-spacing:.06em;
+  }
+  .stream-head .gloss{
+    margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--ink-soft);
+    letter-spacing:.05em;text-align:right;
+  }
+  @media (max-width:640px){.stream-head{flex-wrap:wrap}.stream-head .gloss{margin-left:0;flex-basis:100%;text-align:left}}
+
+  /* ---- item ---- */
+  .item{
+    display:grid;grid-template-columns:4px 1fr;gap:0;
+    background:var(--surface);border:1px solid var(--rule);border-top:0;
+    transition:opacity .2s;
+  }
+  .stream .item:first-of-type{border-top:1px solid var(--rule)}
+  .stripe{background:var(--rule-firm)}
+  .item[data-priority="P1"] .stripe{background:var(--accent)}
+  .item[data-priority="P2"] .stripe{background:var(--rule-firm)}
+  .item[data-priority="P3"] .stripe{
+    background:repeating-linear-gradient(to bottom,var(--rule-firm) 0 5px,transparent 5px 10px);
+  }
+  .item[data-status="done"]{opacity:.5}
+  .item[data-status="done"] .title{text-decoration:line-through;text-decoration-thickness:1px}
+
+  .body{padding:16px 18px 18px;min-width:0}
+  @media (max-width:520px){.body{padding:14px 14px 16px}}
+
+  .topline{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 11px;margin-bottom:5px}
+  .rid{
+    font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.07em;
+    color:var(--ink-soft);
+  }
+  .prio{
+    font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.09em;
+    color:var(--ink-soft);
+  }
+  .item[data-priority="P1"] .prio{color:var(--accent)}
+  .owner,.riskchip{
+    font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.09em;
+    text-transform:uppercase;padding:2px 7px;border-radius:3px;
+  }
+  .owner{background:var(--surface-sunk);color:var(--ink-mid)}
+  .riskchip{background:var(--clay-wash);color:var(--clay)}
+  .seq{
+    font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--ink-soft);
+    padding:2px 7px;border:1px solid var(--rule-firm);border-radius:3px;
+  }
+
+  .title{
+    font-family:var(--display);font-weight:600;font-size:18.5px;line-height:1.3;
+    letter-spacing:-.008em;margin:0 0 9px;color:var(--ink);text-wrap:balance;
+  }
+  .note{font-size:15px;line-height:1.62;color:var(--ink-mid);margin:0;max-width:76ch}
+
+  .deps{
+    margin:11px 0 0;font-family:var(--mono);font-size:11.5px;line-height:1.75;
+    color:var(--ink-soft);display:flex;flex-wrap:wrap;gap:4px 14px;
+  }
+  .deps b{font-weight:500;color:var(--ink-soft);letter-spacing:.08em;text-transform:uppercase;font-size:10.5px}
+  .deps .lock{color:var(--clay)}
+
+  .statusbar{
+    display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+    margin-top:14px;padding-top:13px;border-top:1px solid var(--rule);
+  }
+  .pill{
+    font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;
+    text-transform:uppercase;padding:4px 10px;border-radius:100px;white-space:nowrap;
+  }
+  .pill[data-s="not-started"]{border:1px solid var(--rule-firm);color:var(--grey);background:transparent}
+  .pill[data-s="open"]{border:1px solid var(--accent);color:var(--accent);background:transparent}
+  .pill[data-s="active"]{border:1px solid transparent;background:var(--amber-wash);color:var(--amber)}
+  .pill[data-s="blocked"]{border:1px solid transparent;background:var(--clay-wash);color:var(--clay)}
+  .pill[data-s="done"]{border:1px solid transparent;background:var(--accent);color:var(--accent-ink)}
+
+  select.setstatus{
+    font-family:var(--display);font-size:13px;font-weight:500;color:var(--ink-mid);
+    background:var(--surface);border:1px solid var(--rule-firm);border-radius:4px;
+    padding:5px 9px;cursor:pointer;
+  }
+  .savedstamp{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--ink-soft);
+    margin-left:auto;font-variant-numeric:tabular-nums;
+  }
+  @media (max-width:520px){.savedstamp{margin-left:0;flex-basis:100%}}
+
+  textarea.worknote{
+    width:100%;margin-top:11px;font-family:var(--serif);font-size:14.5px;line-height:1.55;
+    color:var(--ink);background:var(--surface-sunk);border:1px solid var(--rule);
+    border-radius:4px;padding:9px 11px;resize:vertical;min-height:44px;
+  }
+  textarea.worknote::placeholder{color:var(--ink-soft);font-style:italic}
+  textarea.worknote:disabled{opacity:.55;cursor:not-allowed}
+
+  .banner{
+    margin:22px 0 0;padding:11px 14px;border:1px dashed var(--rule-firm);border-radius:4px;
+    font-family:var(--mono);font-size:11.5px;line-height:1.65;color:var(--ink-soft);
+  }
+  .empty{
+    padding:34px 18px;text-align:center;font-family:var(--mono);font-size:12px;
+    color:var(--ink-soft);letter-spacing:.05em;
+  }
+  footer{
+    margin:56px 0 0;padding-top:20px;border-top:1px solid var(--rule);
+    font-family:var(--mono);font-size:11px;line-height:1.8;color:var(--ink-soft);
+    display:flex;flex-wrap:wrap;gap:6px 26px;
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">Build tracker · initial load · 12 September 2026</p>
+  <h1>RV total cost comparison site</h1>
+  <p class="standfirst">Eighteen items across seven workstreams. Statuses and working notes save as you change them, so this page is the live record rather than a snapshot of the plan.</p>
+  <div class="brandflag"><b>Not yet named.</b><span>The brand and domain are still open (RVC&#8209;01). Deliberately a standalone brand, not a FixMyRV sub&#8209;site &mdash; a repair brand and a rental comparison brand are separate things to Google and to renters.</span></div>
+
+  <div class="cluster">
+    <div class="odo">
+      <div class="odo-read">
+        <span class="odo-digits" id="odo-done">00<span class="of">&#8202;/&#8202;18</span></span>
+        <span class="odo-label">shipped</span>
+      </div>
+      <div class="odo-read">
+        <span class="odo-digits" id="odo-motion">00</span>
+        <span class="odo-label">in motion</span>
+      </div>
+      <div class="odo-read">
+        <span class="odo-digits" id="odo-clear">00</span>
+        <span class="odo-label">startable now</span>
+      </div>
+      <span class="odo-spacer"></span>
+      <p class="asof"><b>Plan as of</b>12 Sept 2026</p>
+    </div>
+    <div class="meter" aria-hidden="true">
+      <span class="m-done" id="bar-done" style="width:0%"></span>
+      <span class="m-active" id="bar-active" style="width:0%"></span>
+      <span class="m-blocked" id="bar-blocked" style="width:0%"></span>
+    </div>
+    <div class="tallies">
+      <div class="tally"><span class="n">9</span><span class="k">P1</span></div>
+      <div class="tally"><span class="n">7</span><span class="k">P2</span></div>
+      <div class="tally"><span class="n">2</span><span class="k">P3</span></div>
+      <div class="tally"><span class="n" id="t-blocked">0</span><span class="k">Blocked</span></div>
+      <div class="tally"><span class="n">3</span><span class="k">Build sessions</span></div>
+      <div class="tally"><span class="n">1</span><span class="k">Mike only</span></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="ctrl-row" id="ws-filters" role="group" aria-label="Filter by workstream">
+      <span class="ctrl-legend">Workstream</span>
+    </div>
+    <div class="ctrl-row" id="pr-filters" role="group" aria-label="Filter by priority">
+      <span class="ctrl-legend">Priority</span>
+      <label class="toggle"><input type="checkbox" id="hide-done"> Hide shipped</label>
+    </div>
+  </div>
+
+  <div id="board"></div>
+  <p class="banner" id="sync-banner">Connecting to saved progress&hellip;</p>
+
+  <footer>
+    <span>Priority stripe: solid&nbsp;=&nbsp;P1 · flat&nbsp;=&nbsp;P2 · dashed&nbsp;=&nbsp;P3</span>
+    <span>Open&nbsp;=&nbsp;live and watched, no action taken</span>
+    <span>Source of truth: tracker/items.json</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var PLAN = {"project":"RV total cost comparison site","brand":"Undecided — see RVC-01. Standalone brand, not under FixMyRV.","loadedOn":"2026-09-12","statusVocabulary":["not-started","open","active","blocked","done"],"priorities":["P1","P2","P3"],"workstreams":["decisions","research","partnerships","build","seo","measurement","risk"],"items":[{"id":"RVC-01","workstream":"decisions","priority":"P1","status":"not-started","owner":"Mike only","title":"Pick the domain and brand name","note":"Standalone brand on its own domain, not under FixMyRV. A repair brand and a rental comparison brand are separate things to Google and to renters. Blocks the build, since the site cannot be deployed without it. Mike only.","blockedBy":[],"blocks":["RVC-05","RVC-06","RVC-08","RVC-09"]},{"id":"RVC-02","workstream":"research","priority":"P1","status":"not-started","title":"Search demand pull for routes and cost questions","note":"Same toolkit used for Agile: Google Keyword Planner volumes through the Supermetrics connector on the FMRV Google Ads account, plus autocomplete and People Also Ask harvest, plus Reddit mining. Three query families: route queries (origin to destination), cost questions (how much, mileage fees, insurance, generator), comparison queries (platform vs platform). Output is a ranked list that decides the first ten route pages and the first question pages. Nothing gets built off guesses.","blockedBy":[],"blocks":["RVC-08","RVC-11"]},{"id":"RVC-03","workstream":"partnerships","priority":"P1","status":"not-started","title":"Apply to the RVshare affiliate program through CJ Affiliate","note":"Published terms as of Sept 12, 2026: 4 percent of total booking value after check-in, $7 per new RV listing, uncapped, 30 day cookie, $900 average booking value. Travelpayouts carries the same advertiser at 6.5 percent and $12, so the rate is negotiable. Approval takes days, so start it before the build needs it. Questions for the affiliate manager once approved: is attribution last click, are renters with existing accounts excluded, and what does the affiliate search API actually return.","blockedBy":[],"blocks":["RVC-15","RVC-18"]},{"id":"RVC-04","workstream":"partnerships","priority":"P1","status":"not-started","title":"Apply to the Outdoorsy affiliate program","note":"Flat bounty, roughly $60 per booking, up to $100 to $110 in the creator program, run through HasOffers and AvantLink. Flat payment does not reward the high-ticket trips this site targets, so a percentage deal is worth asking for. The reconnaissance findings are the leverage in that conversation. Outdoorsy also owns Wheelbase, so this one relationship covers the marketplace and most independent operators.","blockedBy":[],"blocks":["RVC-15","RVC-18"]},{"id":"RVC-05","workstream":"build","priority":"P1","status":"not-started","title":"Session 1, working site for one route","note":"Next.js on Vercel, Supabase database, deployed live. Includes: intake form (start point, planned stops, back to start, dates, pickup distance) with the route mapped and the mileage shown and editable; the RVshare reader; the common format database; the trip cost calculator; a results page showing the top three with the full cost breakdown. Designed properly from the start, no throwaway page. RVshare first because it publishes the per-mile rate, generator rate, MPG, tank size, deposit, and a dated price breakdown in one structured block in the page.","blockedBy":["RVC-01"],"blocks":["RVC-06","RVC-14","RVC-15"],"sequence":1},{"id":"RVC-06","workstream":"build","priority":"P1","status":"not-started","title":"Session 2, the other two sources and the fine print reader","note":"Add the RVezy reader (everything server-rendered, shows the mileage allowance inside the quote) and the Outdoorsy and Wheelbase reader (four plain requests, covers the marketplace plus every independent operator on Wheelbase). Add the small AI step that reads fee terms written as text. Add the source text behind every number so any figure can be traced back to where it was read. Outdoorsy publishes the mileage allowance but usually not the overage rate, so the site must say \"150 miles a day included, overage rate not published, confirm with the operator\" rather than treat it as free.","blockedBy":["RVC-01","RVC-05"],"blocks":["RVC-08"],"sequence":2},{"id":"RVC-07","workstream":"build","priority":"P1","status":"not-started","title":"Reader manners and refresh schedule","note":"A few seconds between requests, normal browser headers, each listing read once and stored, refreshed overnight rather than re-read on every search. Volume is hundreds of reads a day, not thousands. RVshare runs Cloudflare JS Detections, Turnstile, and FingerprintJS Pro; none of it fired during reconnaissance at a slow pace. If it ever does, the fallback is a paid browser service, estimated $50 to $200 a month.","blockedBy":[],"blocks":["RVC-18"]},{"id":"RVC-08","workstream":"seo","priority":"P1","status":"not-started","title":"Session 3, route page template and first ten routes","note":"Each route page carries real results: the three cheapest rigs with full breakdowns, the price range across everything found, which platform came out cheapest, what the mileage terms looked like, and a visible \"prices as of\" date. Precomputed overnight so the page loads instantly and Google can read it. Routes chosen by the demand pull, not by guess. Hard rule: no route page ships without real data on it, because near-identical template pages get penalized and pages with unique data do not.","blockedBy":["RVC-01","RVC-02","RVC-06"],"blocks":["RVC-10","RVC-16","RVC-17"],"sequence":3},{"id":"RVC-09","workstream":"seo","priority":"P1","status":"not-started","title":"Technical SEO setup at launch","note":"Server-rendered pages, structured data markup so prices can appear in search results, titles and descriptions generated from the data, auto-updating sitemap, Google Search Console connected on day one through the existing Search Console setup. All handled by Claude Code, nothing manual.","blockedBy":["RVC-01"],"blocks":[]},{"id":"RVC-10","workstream":"seo","priority":"P2","status":"not-started","title":"Origin city and destination pages","note":"One page per pickup city listing every route from it with rig counts, price ranges by class, and typical mileage terms in that market. One page per destination showing cost from twenty origin cities. Both link out to every related route page so the site reads as a connected whole rather than a pile of pages.","blockedBy":["RVC-08"],"blocks":[]},{"id":"RVC-11","workstream":"seo","priority":"P2","status":"not-started","title":"Question pages written from the database","note":"One page per real question from the demand pull: how RV mileage fees work, what generator fees cost, RV rental insurance explained, platform fee comparisons. Written with actual numbers pulled from the collected data, not generic advice. These are the pages that earn links and get cited by ChatGPT, Perplexity, and Google AI answers.","blockedBy":["RVC-02"],"blocks":["RVC-12"]},{"id":"RVC-12","workstream":"measurement","priority":"P2","status":"not-started","title":"AI visibility tracking through Encited","note":"Track the cost and fee questions as prompts once the question pages are live, same approach used for Agile. Note the Encited plan had no monitor slots left as of Sept 2026, so this needs either a plan change or a decision about which existing prompts to replace.","blockedBy":["RVC-11"],"blocks":[]},{"id":"RVC-13","workstream":"partnerships","priority":"P2","status":"not-started","title":"Direct affiliate deals with El Monte, Road Bear, and Indie Campers","note":"These three plus RVshare, RVezy, and Outdoorsy cover the high-ticket motorhome road trip segment. They sell miles as prepaid packages rather than free miles plus overage, so the calculator has to handle both shapes for the ranking to be fair. Indie Campers is European-headquartered with a large inbound tourist base, which makes that deal an early piece of the international plan. Cruise America is excluded by decision.","blockedBy":[],"blocks":[]},{"id":"RVC-14","workstream":"build","priority":"P2","status":"not-started","title":"Custom GPT and other AI front doors","note":"Once the engine exists, wire it to a custom GPT in the GPT Store, a Claude connector, and anything similar. Roughly a day of work each. Cannot replace the website: no Google indexing, no email capture, no route pages, and the rules can change at any time. Treat as an extra channel only.","blockedBy":["RVC-05"],"blocks":[]},{"id":"RVC-15","workstream":"build","priority":"P2","status":"not-started","title":"Referral link handling","note":"Every outbound link carries the affiliate code and goes as deep as possible, straight to the rig with dates filled in rather than a homepage, to reduce the window where a coupon site can overwrite the referral credit before booking.","blockedBy":["RVC-03","RVC-04","RVC-05"],"blocks":[]},{"id":"RVC-16","workstream":"seo","priority":"P3","status":"not-started","title":"International route pages","note":"German, Japanese, and Mandarin versions of the route pages on the same domain, marked so Google serves the right language to the right country. Large contingent of travelers from Asia, Germany, and elsewhere in Europe book long US RV trips and cannot price them. Almost no competition on these searches. Site gets built so adding languages later is not a rebuild.","blockedBy":["RVC-08"],"blocks":[]},{"id":"RVC-17","workstream":"seo","priority":"P3","status":"not-started","title":"Embeddable route calculator for campgrounds and travel bloggers","note":"They get a working tool on their site, the site gets links back. Only worth starting once the route pages have proven results.","blockedBy":["RVC-08"],"blocks":[]},{"id":"RVC-18","workstream":"risk","priority":"P2","status":"open","kind":"risk","title":"Platform access risk","note":"All three readers use publicly available page data with no login. Outdoorsy owns the Wheelbase data path. Any of them could change their pages and break a reader, or object to the reading itself. Mitigations: the affiliate relationships make the traffic wanted rather than unwanted, readers are small and quick to fix, and the stored copy keeps the site working while a fix happens. Do not launch publicly leaning only on unsanctioned access.","blockedBy":[],"blocks":[]}]};
+
+  var STREAM_GLOSS = {
+    decisions:"Blocks everything downstream",
+    research:"Decides what gets built first",
+    partnerships:"Approval takes days &mdash; start early",
+    build:"Sessions run in order 1 &rarr; 2 &rarr; 3",
+    seo:"No page ships without real data on it",
+    measurement:"Needs a plan slot before it can run",
+    risk:"Standing watch, not a deliverable"
+  };
+  var STREAM_ORDER = ["decisions","research","partnerships","build","seo","measurement","risk"];
+  var PRIO_ORDER = {P1:0,P2:1,P3:2};
+  var STATUSES = [
+    {v:"not-started",l:"Not started"},
+    {v:"open",       l:"Open"},
+    {v:"active",     l:"Active"},
+    {v:"blocked",    l:"Blocked"},
+    {v:"done",       l:"Done"}
+  ];
+  var STATUS_LABEL = {};
+  STATUSES.forEach(function(s){ STATUS_LABEL[s.v] = s.l; });
+
+  var items = PLAN.items.slice().sort(function(a,b){
+    var s = STREAM_ORDER.indexOf(a.workstream) - STREAM_ORDER.indexOf(b.workstream);
+    if (s) return s;
+    var p = PRIO_ORDER[a.priority] - PRIO_ORDER[b.priority];
+    if (p) return p;
+    return a.id.localeCompare(b.id);
+  });
+  var byId = {};
+  items.forEach(function(it){ byId[it.id] = it; });
+
+  // Live state: id -> {status, note, updatedAt}. Seeded from the plan's defaults.
+  var state = {};
+  items.forEach(function(it){ state[it.id] = {status: it.status, note: "", updatedAt: null}; });
+
+  var db = null;
+  var filterWs = "all";
+  var filterPr = "all";
+  var hideDone = false;
+
+  function esc(s){
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")
+                    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+  function pad2(n){ return (n < 10 ? "0" : "") + n; }
+
+  function isSettled(id){
+    var s = state[id] && state[id].status;
+    return s === "done";
+  }
+  // "Startable now" = not finished, and every prerequisite is done.
+  function isClear(it){
+    var s = state[it.id].status;
+    if (s === "done") return false;
+    return (it.blockedBy || []).every(isSettled);
+  }
+
+  /* ---------- rendering ---------- */
+
+  function depLine(it){
+    var parts = [];
+    var bb = it.blockedBy || [];
+    if (bb.length){
+      var open = bb.filter(function(id){ return !isSettled(id); });
+      var cls = open.length ? ' class="lock"' : '';
+      parts.push('<span' + cls + '><b>Waits on</b> ' + bb.map(function(id){
+        return esc(id) + (isSettled(id) ? " ✓" : "");
+      }).join(", ") + '</span>');
+    }
+    if ((it.blocks || []).length){
+      parts.push('<span><b>Frees up</b> ' + it.blocks.map(esc).join(", ") + '</span>');
+    }
+    return parts.length ? '<div class="deps">' + parts.join("") + '</div>' : "";
+  }
+
+  function itemHTML(it){
+    var st = state[it.id];
+    var chips = "";
+    if (it.owner)  chips += '<span class="owner">' + esc(it.owner) + '</span>';
+    if (it.kind === "risk") chips += '<span class="riskchip">Risk</span>';
+    if (it.sequence) chips += '<span class="seq">Session ' + it.sequence + '</span>';
+
+    var opts = STATUSES.map(function(s){
+      return '<option value="' + s.v + '"' + (s.v === st.status ? " selected" : "") + '>' + s.l + '</option>';
+    }).join("");
+
+    var stamp = st.updatedAt
+      ? "Saved " + new Date(st.updatedAt).toLocaleDateString(undefined,{day:"numeric",month:"short"})
+      : "";
+
+    return '' +
+      '<article class="item" data-id="' + it.id + '" data-priority="' + it.priority + '" data-status="' + st.status + '">' +
+        '<div class="stripe"></div>' +
+        '<div class="body">' +
+          '<div class="topline">' +
+            '<span class="rid">' + esc(it.id) + '</span>' +
+            '<span class="prio">' + it.priority + '</span>' +
+            chips +
+          '</div>' +
+          '<h3 class="title">' + esc(it.title) + '</h3>' +
+          '<p class="note">' + esc(it.note) + '</p>' +
+          depLine(it) +
+          '<div class="statusbar">' +
+            '<span class="pill" data-s="' + st.status + '">' + STATUS_LABEL[st.status] + '</span>' +
+            '<label class="visually-hidden" for="s-' + it.id + '" hidden>Status for ' + esc(it.id) + '</label>' +
+            '<select class="setstatus" id="s-' + it.id + '" data-id="' + it.id + '" aria-label="Status for ' + esc(it.id) + '">' + opts + '</select>' +
+            '<span class="savedstamp" data-stamp="' + it.id + '">' + stamp + '</span>' +
+          '</div>' +
+          '<textarea class="worknote" id="n-' + it.id + '" data-id="' + it.id + '" rows="1" ' +
+            'placeholder="Where you stopped, what to pick up next…" ' +
+            'aria-label="Working note for ' + esc(it.id) + '"' + (db ? "" : " disabled") + '>' + esc(st.note) + '</textarea>' +
+        '</div>' +
+      '</article>';
+  }
+
+  function visible(it){
+    if (filterWs !== "all" && it.workstream !== filterWs) return false;
+    if (filterPr !== "all" && it.priority !== filterPr) return false;
+    if (hideDone && state[it.id].status === "done") return false;
+    return true;
+  }
+
+  function renderBoard(){
+    var board = document.getElementById("board");
+    var shown = items.filter(visible);
+    if (!shown.length){
+      board.innerHTML = '<p class="empty">Nothing matches this filter.</p>';
+      return;
+    }
+    var html = "";
+    STREAM_ORDER.forEach(function(ws){
+      var group = shown.filter(function(it){ return it.workstream === ws; });
+      if (!group.length) return;
+      var total = items.filter(function(it){ return it.workstream === ws; }).length;
+      html += '<section class="stream">' +
+        '<div class="stream-head">' +
+          '<h2>' + esc(ws) + '</h2>' +
+          '<span class="n">' + group.length + (group.length === total ? "" : " of " + total) + '</span>' +
+          '<span class="gloss">' + (STREAM_GLOSS[ws] || "") + '</span>' +
+        '</div>' +
+        group.map(itemHTML).join("") +
+      '</section>';
+    });
+    board.innerHTML = html;
+    autosizeAll();
+  }
+
+  function renderCluster(){
+    var done = 0, motion = 0, blocked = 0, clear = 0;
+    items.forEach(function(it){
+      var s = state[it.id].status;
+      if (s === "done") done++;
+      else if (s === "active") motion++;
+      else if (s === "blocked") blocked++;
+      if (isClear(it)) clear++;
+    });
+    var n = items.length;
+    document.getElementById("odo-done").innerHTML = pad2(done) + '<span class="of"> / ' + n + '</span>';
+    document.getElementById("odo-motion").textContent = pad2(motion);
+    document.getElementById("odo-clear").textContent = pad2(clear);
+    document.getElementById("t-blocked").textContent = blocked;
+    document.getElementById("bar-done").style.width    = (done    / n * 100) + "%";
+    document.getElementById("bar-active").style.width  = (motion  / n * 100) + "%";
+    document.getElementById("bar-blocked").style.width = (blocked / n * 100) + "%";
+  }
+
+  function renderFilters(){
+    var wsRow = document.getElementById("ws-filters");
+    var prRow = document.getElementById("pr-filters");
+    var counts = {};
+    items.forEach(function(it){ counts[it.workstream] = (counts[it.workstream] || 0) + 1; });
+
+    var wsHTML = '<button class="chip" type="button" data-ws="all" aria-pressed="' + (filterWs === "all") + '">All<span class="c">' + items.length + '</span></button>';
+    STREAM_ORDER.forEach(function(ws){
+      wsHTML += '<button class="chip" type="button" data-ws="' + ws + '" aria-pressed="' + (filterWs === ws) + '">' +
+        esc(ws) + '<span class="c">' + counts[ws] + '</span></button>';
+    });
+    wsRow.insertAdjacentHTML("beforeend", wsHTML);
+
+    var pc = {P1:0,P2:0,P3:0};
+    items.forEach(function(it){ pc[it.priority]++; });
+    var prHTML = '<button class="chip" type="button" data-pr="all" aria-pressed="' + (filterPr === "all") + '">All</button>';
+    ["P1","P2","P3"].forEach(function(p){
+      prHTML += '<button class="chip" type="button" data-pr="' + p + '" aria-pressed="' + (filterPr === p) + '">' +
+        p + '<span class="c">' + pc[p] + '</span></button>';
+    });
+    prRow.querySelector(".toggle").insertAdjacentHTML("beforebegin", prHTML);
+  }
+
+  function syncPressed(){
+    document.querySelectorAll("#ws-filters .chip").forEach(function(b){
+      b.setAttribute("aria-pressed", String(b.dataset.ws === filterWs));
+    });
+    document.querySelectorAll("#pr-filters .chip").forEach(function(b){
+      b.setAttribute("aria-pressed", String(b.dataset.pr === filterPr));
+    });
+  }
+
+  function autosize(ta){
+    ta.style.height = "auto";
+    ta.style.height = Math.max(44, ta.scrollHeight) + "px";
+  }
+  function autosizeAll(){
+    document.querySelectorAll("textarea.worknote").forEach(autosize);
+  }
+
+  /* ---------- persistence ---------- */
+
+  function persist(id){
+    if (!db) return;
+    var st = state[id];
+    st.updatedAt = new Date().toISOString();
+    db.doc("progress/" + id).set({
+      status: st.status,
+      note: st.note,
+      updatedAt: st.updatedAt
+    }).then(function(){
+      var el = document.querySelector('[data-stamp="' + id + '"]');
+      if (el) el.textContent = "Saved " + new Date(st.updatedAt).toLocaleDateString(undefined,{day:"numeric",month:"short"});
+    }).catch(function(e){
+      var el = document.querySelector('[data-stamp="' + id + '"]');
+      if (el) el.textContent = (e && e.code === "revoked") ? "Not saved — access ended" : "Not saved — try again";
+    });
+  }
+
+  var noteTimers = {};
+  function queueNote(id, value){
+    state[id].note = value;
+    clearTimeout(noteTimers[id]);
+    var el = document.querySelector('[data-stamp="' + id + '"]');
+    if (el) el.textContent = "Saving…";
+    noteTimers[id] = setTimeout(function(){ persist(id); }, 700);
+  }
+
+  /* ---------- events (delegated, survive re-render) ---------- */
+
+  document.addEventListener("click", function(e){
+    var chip = e.target.closest(".chip");
+    if (!chip) return;
+    if (chip.dataset.ws) filterWs = chip.dataset.ws;
+    if (chip.dataset.pr) filterPr = chip.dataset.pr;
+    syncPressed();
+    renderBoard();
+  });
+
+  document.addEventListener("change", function(e){
+    if (e.target.id === "hide-done"){
+      hideDone = e.target.checked;
+      renderBoard();
+      return;
+    }
+    var sel = e.target.closest("select.setstatus");
+    if (!sel) return;
+    var id = sel.dataset.id;
+    state[id].status = sel.value;
+    var card = sel.closest(".item");
+    card.dataset.status = sel.value;
+    var pill = card.querySelector(".pill");
+    pill.dataset.s = sel.value;
+    pill.textContent = STATUS_LABEL[sel.value];
+    persist(id);
+    renderCluster();
+    // Dependency locks elsewhere on the board may have changed.
+    if (hideDone && sel.value === "done") renderBoard();
+    else refreshDepLines();
+  });
+
+  function refreshDepLines(){
+    document.querySelectorAll(".item").forEach(function(card){
+      var it = byId[card.dataset.id];
+      if (!it) return;
+      var existing = card.querySelector(".deps");
+      var html = depLine(it);
+      if (existing && html){ existing.outerHTML = html; }
+      else if (existing && !html){ existing.remove(); }
+      else if (!existing && html){ card.querySelector(".note").insertAdjacentHTML("afterend", html); }
+    });
+  }
+
+  document.addEventListener("input", function(e){
+    var ta = e.target.closest("textarea.worknote");
+    if (!ta) return;
+    autosize(ta);
+    queueNote(ta.dataset.id, ta.value);
+  });
+
+  /* ---------- boot ---------- */
+
+  renderFilters();
+  renderBoard();
+  renderCluster();
+
+  function banner(text){
+    document.getElementById("sync-banner").innerHTML = text;
+  }
+
+  if (window.claude && typeof window.claude.use === "function"){
+    window.claude.use("db").then(function(store){
+      if (!store){
+        banner("Saved progress is not available in this view. The plan below is complete and readable; status changes will not stick.");
+        return;
+      }
+      db = store;
+      document.querySelectorAll("textarea.worknote").forEach(function(t){ t.disabled = false; });
+      banner("Progress saves automatically. Statuses and notes are shared with anyone who can open this page.");
+
+      db.collection("progress").onSnapshot(function(snap){
+        var touched = false;
+        snap.docs.forEach(function(d){
+          var body = d.data();
+          if (!body || !state[d.id]) return;
+          var next = {
+            status: typeof body.status === "string" && STATUS_LABEL[body.status] ? body.status : state[d.id].status,
+            note: typeof body.note === "string" ? body.note : "",
+            updatedAt: typeof body.updatedAt === "string" ? body.updatedAt : null
+          };
+          var cur = state[d.id];
+          if (cur.status !== next.status || cur.note !== next.note){
+            state[d.id] = next;
+            touched = true;
+          } else {
+            cur.updatedAt = next.updatedAt;
+          }
+        });
+        if (touched){
+          var focused = document.activeElement;
+          var keepId = focused && focused.dataset ? focused.dataset.id : null;
+          var keepPos = focused && focused.selectionStart;
+          renderBoard();
+          renderCluster();
+          if (keepId){
+            var back = document.getElementById("n-" + keepId);
+            if (back){ back.focus(); try { back.setSelectionRange(keepPos, keepPos); } catch(_){} }
+          }
+        } else {
+          renderCluster();
+        }
+      }, function(err){
+        banner("Live sync stopped (" + (err && err.code ? err.code : "unknown") + "). Reload the page to reconnect.");
+      });
+    }).catch(function(){
+      banner("Saved progress could not be reached. The plan below is complete and readable.");
+    });
+  } else {
+    banner("Saved progress is not available in this view. The plan below is complete and readable; status changes will not stick.");
+  }
+})();
+</script>

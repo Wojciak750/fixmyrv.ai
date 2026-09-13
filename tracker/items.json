@@ -1,0 +1,195 @@
+{
+  "project": "RV total cost comparison site",
+  "brand": "Undecided — see RVC-01. Standalone brand, not under FixMyRV.",
+  "loadedOn": "2026-09-12",
+  "statusVocabulary": ["not-started", "open", "active", "blocked", "done"],
+  "priorities": ["P1", "P2", "P3"],
+  "workstreams": ["decisions", "research", "partnerships", "build", "seo", "measurement", "risk"],
+  "items": [
+    {
+      "id": "RVC-01",
+      "workstream": "decisions",
+      "priority": "P1",
+      "status": "not-started",
+      "owner": "Mike only",
+      "title": "Pick the domain and brand name",
+      "note": "Standalone brand on its own domain, not under FixMyRV. A repair brand and a rental comparison brand are separate things to Google and to renters. Blocks the build, since the site cannot be deployed without it. Mike only.",
+      "blockedBy": [],
+      "blocks": ["RVC-05", "RVC-06", "RVC-08", "RVC-09"]
+    },
+    {
+      "id": "RVC-02",
+      "workstream": "research",
+      "priority": "P1",
+      "status": "not-started",
+      "title": "Search demand pull for routes and cost questions",
+      "note": "Same toolkit used for Agile: Google Keyword Planner volumes through the Supermetrics connector on the FMRV Google Ads account, plus autocomplete and People Also Ask harvest, plus Reddit mining. Three query families: route queries (origin to destination), cost questions (how much, mileage fees, insurance, generator), comparison queries (platform vs platform). Output is a ranked list that decides the first ten route pages and the first question pages. Nothing gets built off guesses.",
+      "blockedBy": [],
+      "blocks": ["RVC-08", "RVC-11"]
+    },
+    {
+      "id": "RVC-03",
+      "workstream": "partnerships",
+      "priority": "P1",
+      "status": "not-started",
+      "title": "Apply to the RVshare affiliate program through CJ Affiliate",
+      "note": "Published terms as of Sept 12, 2026: 4 percent of total booking value after check-in, $7 per new RV listing, uncapped, 30 day cookie, $900 average booking value. Travelpayouts carries the same advertiser at 6.5 percent and $12, so the rate is negotiable. Approval takes days, so start it before the build needs it. Questions for the affiliate manager once approved: is attribution last click, are renters with existing accounts excluded, and what does the affiliate search API actually return.",
+      "blockedBy": [],
+      "blocks": ["RVC-15", "RVC-18"]
+    },
+    {
+      "id": "RVC-04",
+      "workstream": "partnerships",
+      "priority": "P1",
+      "status": "not-started",
+      "title": "Apply to the Outdoorsy affiliate program",
+      "note": "Flat bounty, roughly $60 per booking, up to $100 to $110 in the creator program, run through HasOffers and AvantLink. Flat payment does not reward the high-ticket trips this site targets, so a percentage deal is worth asking for. The reconnaissance findings are the leverage in that conversation. Outdoorsy also owns Wheelbase, so this one relationship covers the marketplace and most independent operators.",
+      "blockedBy": [],
+      "blocks": ["RVC-15", "RVC-18"]
+    },
+    {
+      "id": "RVC-05",
+      "workstream": "build",
+      "priority": "P1",
+      "status": "not-started",
+      "title": "Session 1, working site for one route",
+      "note": "Next.js on Vercel, Supabase database, deployed live. Includes: intake form (start point, planned stops, back to start, dates, pickup distance) with the route mapped and the mileage shown and editable; the RVshare reader; the common format database; the trip cost calculator; a results page showing the top three with the full cost breakdown. Designed properly from the start, no throwaway page. RVshare first because it publishes the per-mile rate, generator rate, MPG, tank size, deposit, and a dated price breakdown in one structured block in the page.",
+      "blockedBy": ["RVC-01"],
+      "blocks": ["RVC-06", "RVC-14", "RVC-15"],
+      "sequence": 1
+    },
+    {
+      "id": "RVC-06",
+      "workstream": "build",
+      "priority": "P1",
+      "status": "not-started",
+      "title": "Session 2, the other two sources and the fine print reader",
+      "note": "Add the RVezy reader (everything server-rendered, shows the mileage allowance inside the quote) and the Outdoorsy and Wheelbase reader (four plain requests, covers the marketplace plus every independent operator on Wheelbase). Add the small AI step that reads fee terms written as text. Add the source text behind every number so any figure can be traced back to where it was read. Outdoorsy publishes the mileage allowance but usually not the overage rate, so the site must say \"150 miles a day included, overage rate not published, confirm with the operator\" rather than treat it as free.",
+      "blockedBy": ["RVC-01", "RVC-05"],
+      "blocks": ["RVC-08"],
+      "sequence": 2
+    },
+    {
+      "id": "RVC-07",
+      "workstream": "build",
+      "priority": "P1",
+      "status": "not-started",
+      "title": "Reader manners and refresh schedule",
+      "note": "A few seconds between requests, normal browser headers, each listing read once and stored, refreshed overnight rather than re-read on every search. Volume is hundreds of reads a day, not thousands. RVshare runs Cloudflare JS Detections, Turnstile, and FingerprintJS Pro; none of it fired during reconnaissance at a slow pace. If it ever does, the fallback is a paid browser service, estimated $50 to $200 a month.",
+      "blockedBy": [],
+      "blocks": ["RVC-18"]
+    },
+    {
+      "id": "RVC-08",
+      "workstream": "seo",
+      "priority": "P1",
+      "status": "not-started",
+      "title": "Session 3, route page template and first ten routes",
+      "note": "Each route page carries real results: the three cheapest rigs with full breakdowns, the price range across everything found, which platform came out cheapest, what the mileage terms looked like, and a visible \"prices as of\" date. Precomputed overnight so the page loads instantly and Google can read it. Routes chosen by the demand pull, not by guess. Hard rule: no route page ships without real data on it, because near-identical template pages get penalized and pages with unique data do not.",
+      "blockedBy": ["RVC-01", "RVC-02", "RVC-06"],
+      "blocks": ["RVC-10", "RVC-16", "RVC-17"],
+      "sequence": 3
+    },
+    {
+      "id": "RVC-09",
+      "workstream": "seo",
+      "priority": "P1",
+      "status": "not-started",
+      "title": "Technical SEO setup at launch",
+      "note": "Server-rendered pages, structured data markup so prices can appear in search results, titles and descriptions generated from the data, auto-updating sitemap, Google Search Console connected on day one through the existing Search Console setup. All handled by Claude Code, nothing manual.",
+      "blockedBy": ["RVC-01"],
+      "blocks": []
+    },
+    {
+      "id": "RVC-10",
+      "workstream": "seo",
+      "priority": "P2",
+      "status": "not-started",
+      "title": "Origin city and destination pages",
+      "note": "One page per pickup city listing every route from it with rig counts, price ranges by class, and typical mileage terms in that market. One page per destination showing cost from twenty origin cities. Both link out to every related route page so the site reads as a connected whole rather than a pile of pages.",
+      "blockedBy": ["RVC-08"],
+      "blocks": []
+    },
+    {
+      "id": "RVC-11",
+      "workstream": "seo",
+      "priority": "P2",
+      "status": "not-started",
+      "title": "Question pages written from the database",
+      "note": "One page per real question from the demand pull: how RV mileage fees work, what generator fees cost, RV rental insurance explained, platform fee comparisons. Written with actual numbers pulled from the collected data, not generic advice. These are the pages that earn links and get cited by ChatGPT, Perplexity, and Google AI answers.",
+      "blockedBy": ["RVC-02"],
+      "blocks": ["RVC-12"]
+    },
+    {
+      "id": "RVC-12",
+      "workstream": "measurement",
+      "priority": "P2",
+      "status": "not-started",
+      "title": "AI visibility tracking through Encited",
+      "note": "Track the cost and fee questions as prompts once the question pages are live, same approach used for Agile. Note the Encited plan had no monitor slots left as of Sept 2026, so this needs either a plan change or a decision about which existing prompts to replace.",
+      "blockedBy": ["RVC-11"],
+      "blocks": []
+    },
+    {
+      "id": "RVC-13",
+      "workstream": "partnerships",
+      "priority": "P2",
+      "status": "not-started",
+      "title": "Direct affiliate deals with El Monte, Road Bear, and Indie Campers",
+      "note": "These three plus RVshare, RVezy, and Outdoorsy cover the high-ticket motorhome road trip segment. They sell miles as prepaid packages rather than free miles plus overage, so the calculator has to handle both shapes for the ranking to be fair. Indie Campers is European-headquartered with a large inbound tourist base, which makes that deal an early piece of the international plan. Cruise America is excluded by decision.",
+      "blockedBy": [],
+      "blocks": []
+    },
+    {
+      "id": "RVC-14",
+      "workstream": "build",
+      "priority": "P2",
+      "status": "not-started",
+      "title": "Custom GPT and other AI front doors",
+      "note": "Once the engine exists, wire it to a custom GPT in the GPT Store, a Claude connector, and anything similar. Roughly a day of work each. Cannot replace the website: no Google indexing, no email capture, no route pages, and the rules can change at any time. Treat as an extra channel only.",
+      "blockedBy": ["RVC-05"],
+      "blocks": []
+    },
+    {
+      "id": "RVC-15",
+      "workstream": "build",
+      "priority": "P2",
+      "status": "not-started",
+      "title": "Referral link handling",
+      "note": "Every outbound link carries the affiliate code and goes as deep as possible, straight to the rig with dates filled in rather than a homepage, to reduce the window where a coupon site can overwrite the referral credit before booking.",
+      "blockedBy": ["RVC-03", "RVC-04", "RVC-05"],
+      "blocks": []
+    },
+    {
+      "id": "RVC-16",
+      "workstream": "seo",
+      "priority": "P3",
+      "status": "not-started",
+      "title": "International route pages",
+      "note": "German, Japanese, and Mandarin versions of the route pages on the same domain, marked so Google serves the right language to the right country. Large contingent of travelers from Asia, Germany, and elsewhere in Europe book long US RV trips and cannot price them. Almost no competition on these searches. Site gets built so adding languages later is not a rebuild.",
+      "blockedBy": ["RVC-08"],
+      "blocks": []
+    },
+    {
+      "id": "RVC-17",
+      "workstream": "seo",
+      "priority": "P3",
+      "status": "not-started",
+      "title": "Embeddable route calculator for campgrounds and travel bloggers",
+      "note": "They get a working tool on their site, the site gets links back. Only worth starting once the route pages have proven results.",
+      "blockedBy": ["RVC-08"],
+      "blocks": []
+    },
+    {
+      "id": "RVC-18",
+      "workstream": "risk",
+      "priority": "P2",
+      "status": "open",
+      "kind": "risk",
+      "title": "Platform access risk",
+      "note": "All three readers use publicly available page data with no login. Outdoorsy owns the Wheelbase data path. Any of them could change their pages and break a reader, or object to the reading itself. Mitigations: the affiliate relationships make the traffic wanted rather than unwanted, readers are small and quick to fix, and the stored copy keeps the site working while a fix happens. Do not launch publicly leaning only on unsanctioned access.",
+      "blockedBy": [],
+      "blocks": []
+    }
+  ]
+}
