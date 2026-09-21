@@ -6,6 +6,10 @@ holds a version-controlled copy of the files that were staged into that
 project's preview build on 21 September 2026 for the new page
 `/blog/rv-ac-repair-or-replace`. Nothing here was published.
 
+Lovable project commits that carry the staged change: `627ff73` (page and
+layout) and `99401b4` (route, blog index, sitemap, internal link). Preview:
+https://id-preview--8e9c68d0-84dc-48f4-afe3-2aabf2c63aea.lovable.app/blog/rv-ac-repair-or-replace
+
 ## Files
 
 | Path | Change |
