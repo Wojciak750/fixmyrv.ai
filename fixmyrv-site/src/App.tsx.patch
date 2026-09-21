@@ -1,0 +1,8 @@
+--- src/App.tsx (Lovable project fixmyrv, commit c9a82393)
++++ src/App.tsx
+@@ imports @@
+ import RvAcNotCooling from "./pages/blog/RvAcNotCooling";
++import RvAcRepairOrReplace from "./pages/blog/RvAcRepairOrReplace";
+@@ routes @@
+           <Route path="/blog/rv-ac-not-cooling" element={<RvAcNotCooling />} />
++          <Route path="/blog/rv-ac-repair-or-replace" element={<RvAcRepairOrReplace />} />
