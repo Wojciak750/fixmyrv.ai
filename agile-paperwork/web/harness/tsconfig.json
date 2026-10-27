@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "module": "ESNext", "moduleResolution": "bundler", "jsx": "react-jsx", "strict": true, "noEmit": true,
+    "skipLibCheck": true, "lib": ["ES2022", "DOM", "DOM.Iterable"], "types": ["vite/client"], "allowImportingTsExtensions": true,
+    "baseUrl": ".", "paths": {
+      "@/integrations/supabase/client": ["stubs/supabase-client.ts"],
+      "@/components/quotes/QuotesLayout": ["stubs/QuotesLayout.tsx"],
+      "@/components/quotes/ui": ["stubs/ui.tsx"],
+      "@/lib/quotes/format": ["stubs/format.ts"],
+      "@/*": ["../dashboard/src/*"]
+    }
+  },
+  "include": ["src", "stubs", "../dashboard/src"]
+}

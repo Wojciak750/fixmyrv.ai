@@ -45,3 +45,11 @@ Every `blockedBy` link is taken from the wording of the notes themselves, not in
   "once the question pages are live".
 
 The tracker's "startable now" readout counts items whose prerequisites are all done.
+
+## Agile adjuster paperwork
+
+[`agile-paperwork/`](agile-paperwork/) holds the "Upload paperwork" feature for the Agile RV Housing
+quotes dashboard: a business profile with encrypted EIN and bank numbers, adjuster form upload, a
+Claude-read field mapping filled locally, a live review screen, signature after preview, and
+download. The dashboard itself lives in Lovable; [`INTEGRATION.md`](agile-paperwork/INTEGRATION.md)
+lists exactly what to copy and which small edits to make.

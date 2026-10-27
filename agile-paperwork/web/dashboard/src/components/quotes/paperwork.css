@@ -1,0 +1,85 @@
+/* Adjuster paperwork screens. Uses the dashboard's --q-* tokens from quotes.css. */
+.q-root .pw-back { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-weight: 600; }
+.q-root .pw-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.q-root .pw-mono { font-variant-numeric: tabular-nums; letter-spacing: 0.5px; }
+.q-root .pw-lock { width: 14px; height: 14px; display: inline-block; vertical-align: -2px; color: var(--q-muted); }
+.q-root .pw-masked { min-height: 44px; display: inline-flex; align-items: center; padding: 0 12px; border: 1px solid var(--q-border); border-radius: 8px; background: var(--q-bg); min-width: 140px; font-weight: 600; }
+.q-root .pw-savebar { position: sticky; bottom: 0; background: var(--q-bg); padding: 12px 0; display: flex; gap: 12px; align-items: center; border-top: 1px solid var(--q-border); }
+.q-root .pw-rowtitle { font-weight: 700; color: var(--q-navy); }
+.q-root .pw-warn { color: var(--q-orange-text); font-weight: 600; }
+.q-root .pw-phone-only { display: none; }
+
+/* Signature pad */
+.q-root .pw-sigpad { display: grid; gap: 10px; }
+.q-root .pw-sigpad-box { position: relative; border: 1px solid var(--q-border); border-radius: 10px; background: var(--q-white); }
+.q-root .pw-sigpad-canvas { display: block; width: 100%; height: 190px; touch-action: none; cursor: crosshair; border-radius: 10px; }
+.q-root .pw-sigpad-line { position: absolute; left: 20px; right: 20px; bottom: 44px; border-bottom: 1px dashed var(--q-border); pointer-events: none; }
+.q-root .pw-sig-show { border: 1px solid var(--q-border); border-radius: 10px; padding: 12px; background: var(--q-white); min-height: 80px; display: flex; align-items: center; }
+.q-root .pw-sig-show img { max-width: 100%; max-height: 120px; }
+
+/* Review screen */
+.q-root .pw-head { display: grid; gap: 8px; }
+.q-root .pw-title { font-size: 34px; font-weight: 700; color: var(--q-navy); margin: 0; line-height: 1.1; overflow-wrap: anywhere; }
+.q-root .pw-tabs { display: none; }
+.q-root .pw-review { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr); gap: 20px; align-items: start; }
+.q-root .pw-panel { min-width: 0; display: grid; gap: 16px; }
+.q-root .pw-panel-preview { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto; background: var(--q-white); border: 1px solid var(--q-border); border-radius: 14px; padding: 14px; gap: 12px; }
+.q-root .pw-preview-tools { display: flex; gap: 8px 12px; flex-wrap: wrap; align-items: center; }
+.q-root .pw-preview { display: grid; gap: 14px; min-height: 200px; }
+.q-root .pw-preview-empty { min-height: 300px; display: flex; align-items: center; justify-content: center; color: var(--q-muted); background: var(--q-bg); border-radius: 8px; }
+.q-root .pw-page { position: relative; background: var(--q-white); box-shadow: 0 0 0 1px var(--q-border); border-radius: 2px; overflow: hidden; }
+.q-root .pw-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.q-root .pw-layer { position: absolute; inset: 0; }
+.q-root .pw-pageno { position: absolute; right: 6px; bottom: 4px; font-size: 11px; color: var(--q-muted); background: rgb(255 255 255 / 0.85); padding: 0 4px; border-radius: 4px; pointer-events: none; }
+.q-root .pw-placing .pw-page { cursor: crosshair; box-shadow: 0 0 0 2px var(--q-orange); }
+.q-root .pw-placing .pw-hl { pointer-events: none; }
+
+.q-root .pw-hl { position: absolute; padding: 0; margin: 0; background: transparent; border-radius: 3px; cursor: pointer; }
+.q-root .pw-hl-blank { border: 2px dashed var(--q-orange); background: rgb(168 74 12 / 0.12); }
+.q-root .pw-hl-auto { border: 1.5px solid rgb(31 92 58 / 0.55); }
+.q-root .pw-hl-edited { border: 2px solid var(--q-link); background: rgb(0 84 120 / 0.07); }
+.q-root .pw-hl-signature { border: 2px dashed var(--q-navy-2); background: rgb(11 70 100 / 0.06); }
+.q-root .pw-hl-none { border: 1px dotted var(--q-muted); }
+.q-root .pw-hl-selected { outline: 3px solid var(--q-orange); outline-offset: 1px; z-index: 2; }
+.q-root .pw-hl-movable.pw-hl-selected { cursor: move; touch-action: none; }
+
+.q-root .pw-legend { display: flex; gap: 6px 14px; flex-wrap: wrap; color: var(--q-muted); }
+.q-root .pw-key { display: inline-block; width: 14px; height: 10px; border-radius: 2px; vertical-align: -1px; margin-right: 4px; }
+.q-root .pw-key-blank { border: 2px dashed var(--q-orange); background: rgb(168 74 12 / 0.12); }
+.q-root .pw-key-auto { border: 1.5px solid rgb(31 92 58 / 0.7); }
+.q-root .pw-key-edited { border: 2px solid var(--q-link); }
+.q-root .pw-key-signature { border: 2px dashed var(--q-navy-2); }
+
+.q-root .pw-signbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; border-top: 1px solid var(--q-row-border); padding-top: 12px; }
+
+.q-root .pw-fieldlist { display: grid; }
+.q-root .pw-field { display: grid; gap: 6px; padding: 12px 10px; margin: 0 -10px; border-bottom: 1px solid var(--q-row-border); border-left: 4px solid transparent; }
+.q-root .pw-field:last-child { border-bottom: 0; }
+.q-root .pw-field-blank { border-left-color: var(--q-orange); }
+.q-root .pw-field-edited { border-left-color: var(--q-link); }
+.q-root .pw-field-selected { background: var(--q-info-bg); }
+.q-root .pw-field-head { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; }
+.q-root .pw-field-label { font-weight: 700; color: var(--q-text); }
+.q-root .pw-field-actions:empty { display: none; }
+.q-root .pw-check { margin-right: 0; }
+.q-root .pw-details summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; color: var(--q-link); }
+
+.q-root .pw-actionbar { position: sticky; bottom: 0; z-index: 5; display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; padding: 12px 0; background: var(--q-bg); border-top: 1px solid var(--q-border); }
+
+@media (max-width: 999px) {
+  .q-root .pw-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: var(--q-white); border: 1px solid var(--q-border); border-radius: 10px; padding: 4px; position: sticky; top: 0; z-index: 6; }
+  .q-root .pw-tabs button { min-height: 44px; border: 0; border-radius: 8px; background: transparent; font: inherit; font-weight: 600; color: var(--q-navy); cursor: pointer; }
+  .q-root .pw-tabs button.active { background: var(--q-navy); color: var(--q-white); }
+  .q-root .pw-review { grid-template-columns: minmax(0, 1fr); }
+  .q-root .pw-review[data-tab="fields"] .pw-panel-preview { display: none; }
+  .q-root .pw-review[data-tab="preview"] .pw-panel-fields { display: none; }
+  .q-root .pw-panel-preview { position: static; max-height: none; overflow: visible; padding: 10px; }
+  .q-root .pw-phone-only { display: inline-flex; }
+  .q-root .pw-actionbar { justify-content: stretch; margin: 0 -16px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); }
+  .q-root .pw-actionbar .q-btn { flex: 1; }
+  .q-root .pw-title { font-size: 28px; }
+}
+.q-root .pw-sync { margin-right: auto; align-self: center; }
+@media (max-width: 999px) {
+  .q-root .pw-sync { flex-basis: 100%; text-align: center; }
+}
